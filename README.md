@@ -56,4 +56,4 @@ npm run dev
 ---
 
 ## Team
-- Farmaora Team — Keheilan AI Hackathon
+- Binarybrain team — Keheilan AI Hackathon
