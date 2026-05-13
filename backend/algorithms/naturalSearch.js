@@ -30,4 +30,17 @@ function parseSearchQuery(query) {
   return filters;
 }
 
-module.exports = { parseSearchQuery };
+
+function applyFilters(farms, filters) {
+  return farms.filter(farm => {
+    if (filters.crop_type && farm.crop_type?.toLowerCase() !== filters.crop_type) return false;
+    if (filters.country && farm.country?.toLowerCase() !== filters.country) return false;
+    if (filters.investment_model && farm.investment_model?.toLowerCase() !== filters.investment_model) return false;
+    if (filters.max_risk_score !== null && farm.risk_score > filters.max_risk_score) return false;
+    if (filters.min_risk_score !== null && farm.risk_score < filters.min_risk_score) return false;
+    if (filters.max_min_investment !== null && farm.min_investment > filters.max_min_investment) return false;
+    if (filters.min_min_investment !== null && farm.min_investment < filters.min_min_investment) return false;
+    return true;
+  });
+}
+module.exports = { parseSearchQuery, applyFilters };
