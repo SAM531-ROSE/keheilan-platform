@@ -38,9 +38,24 @@ function SearchPage() {
       {results && (
         <div>
           <p style={{ color: '#aaa' }}>Found <strong style={{ color: '#c8a84b' }}>{results.totalFound}</strong> farms</p>
-          <div style={{ background: '#1a3a1a', padding: '10px', borderRadius: '8px', marginBottom: '20px' }}>
-            <p style={{ color: '#aaa', margin: 0, fontSize: '13px' }}>AI Filters: {JSON.stringify(results.filtersDetected)}</p>
-          </div>
+          {Object.values(results.filtersDetected).some(v => v !== null) && (
+  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
+    {Object.entries(results.filtersDetected).map(([key, val]) =>
+      val !== null ? (
+        <span key={key} style={{
+          background: 'rgba(200,168,75,0.15)',
+          border: '1px solid rgba(200,168,75,0.4)',
+          color: '#c8a84b',
+          borderRadius: '20px',
+          padding: '4px 12px',
+          fontSize: '13px'
+        }}>
+          {key.replace(/([A-Z])/g, ' $1').toLowerCase()}: {String(val)}
+        </span>
+      ) : null
+    )}
+  </div>
+)}
           {results.farms.map(farm => (
             <div key={farm.id} style={{ background: '#1a3a1a', border: '1px solid #2a4a2a', borderRadius: '10px', padding: '20px', marginBottom: '15px' }}>
               <h3 style={{ color: '#c8a84b', margin: '0 0 10px' }}>{farm.name}</h3>

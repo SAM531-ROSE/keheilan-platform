@@ -59,7 +59,7 @@ function KYCPage() {
       {result && (
         <div style={{ marginTop: '20px', background: '#1a3a1a', border: `1px solid ${result.verified ? '#2a8a2a' : '#8a2a2a'}`, borderRadius: '10px', padding: '25px' }}>
           <h3 style={{ color: result.verified ? '#4CAF50' : '#f44336', marginTop: 0 }}>
-            {result.verified ? '✅ VERIFIED' : '❌ NOT VERIFIED'}
+            {result.verified ? ' VERIFIED' : ' NOT VERIFIED'}
           </h3>
           <p style={{ color: '#ccc' }}> Extracted Name: <strong style={{ color: '#c8a84b' }}>{result.extractedName}</strong></p>
           <p style={{ color: '#ccc' }}>Extracted ID: <strong style={{ color: '#c8a84b' }}>{result.extractedId}</strong></p>
