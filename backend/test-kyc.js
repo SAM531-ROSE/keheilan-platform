@@ -4,8 +4,8 @@ const axios = require('axios');
 
 const form = new FormData();
 form.append('document', fs.createReadStream('./test-id.jpg'));
-form.append('fullName', 'John Smith');
-form.append('idNumber', 'AB123456');
+form.append('fullName', 'sama muhammmad ');
+form.append('idNumber', '200261589');
 
 axios.post('http://localhost:3001/api/ai/kyc', form, {
   headers: form.getHeaders()
