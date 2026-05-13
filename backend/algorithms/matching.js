@@ -1,6 +1,5 @@
 function calculateCompatibility(farm, investorProfile) {
   let score = 0;
-
   const ratio = investorProfile.budget / (farm.min_investment || 1000);
   if (ratio >= 3) score += 25;
   else if (ratio >= 2) score += 18;
@@ -23,14 +22,12 @@ function calculateCompatibility(farm, investorProfile) {
   if (sus >= 80) score += 15;
   else if (sus >= 60) score += 10;
   else if (sus >= 40) score += 5;
-
   if (investorProfile.preferredCountry && farm.country === investorProfile.preferredCountry) score += 10;
   else score += 5;
 
   const annualReturn = 0.09;
   const years = (farm.lock_up_months || 12) / 12;
   const estimatedReturn = Math.round(investorProfile.budget * annualReturn * years);
-
   return { farmId: farm.id, farmName: farm.name, compatibilityScore: Math.min(score, 100), estimatedReturn };
 }
 
