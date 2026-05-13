@@ -69,57 +69,25 @@ Respond in this exact JSON format:
   }
 });
 
-// F6 - Natural Language Search with Gemini AI
+// // POST /api/ai/search
 router.post('/search', async (req, res) => {
-  try {
-    const { query } = req.body;
-    if (!query) return res.status(400).json({ error: 'Query is required' });
+  const { query } = req.body;
 
-    const model  = getModel();
-    const prompt = `
-You are an agricultural investment search assistant.
-Parse this search query and extract filters as JSON.
+  if (!query) return res.status(400).json({ error: 'Query is required' });
 
-Query: "${query}"
+  // Use local algorithm — no AI API needed
+  const { parseSearchQuery } = require('../algorithms/naturalSearch');
+  const filters = parseSearchQuery(query);
 
-Respond ONLY in this exact JSON format with no extra text:
-{
-  "cropType": "wheat/corn/rice/cotton/soybean or null",
-  "maxRiskScore": number or null,
-  "minRiskScore": number or null,
-  "maxInvestment": number or null,
-  "minInvestment": number or null,
-  "country": "country name lowercase or null",
-  "status": "approved/pending or null",
-  "investmentModel": "fractional_land/farm_operations/hybrid or null"
-}
-`;
+  let q = supabase.from('farms').select('*').eq('status', 'approved');
+  if (filters.crop_type) q = q.eq('crop_type', filters.crop_type);
+  if (filters.country) q = q.eq('country', filters.country);
+  if (filters.max_risk_score) q = q.lte('risk_score', filters.max_risk_score);
+  if (filters.max_min_investment) q = q.lte('min_investment', filters.max_min_investment);
 
-    const result = await model.generateContent(prompt);
-    let text = result.response.text().trim();
-    text = text.replace(/```json/g,'').replace(/```/g,'');
-    const filters = JSON.parse(text);
+  const { data: farms, error } = await q;
+  if (error) return res.status(500).json({ error });
 
-    const { data: farms, error } = await supabase.from('farms').select('*');
-    if (error) return res.status(500).json({ error: error.message });
-
-    const results = farms.filter(farm => {
-      if (filters.maxRiskScore && farm.risk_score > filters.maxRiskScore) return false;
-      if (filters.minRiskScore && farm.risk_score < filters.minRiskScore) return false;
-      if (filters.cropType && farm.crop_type?.toLowerCase() !== filters.cropType) return false;
-      if (filters.maxInvestment && farm.min_investment > filters.maxInvestment) return false;
-      if (filters.minInvestment && farm.min_investment < filters.minInvestment) return false;
-      if (filters.country && farm.country?.toLowerCase() !== filters.country) return false;
-      if (filters.status && farm.status !== filters.status) return false;
-      if (filters.investmentModel && farm.investment_model !== filters.investmentModel) return false;
-      return true;
-    });
-
-    res.json({ query, filtersDetected: filters, totalFound: results.length, farms: results });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json({ filters, farms });
 });
-
 module.exports = router;

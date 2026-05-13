@@ -3,8 +3,8 @@ require('dotenv').config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-function getModel(modelName = 'gemini-2.5-flash') 
-{  return genAI.getGenerativeModel({ model: modelName });
+function getModel() {
+return genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 }
 
 module.exports = { getModel };
