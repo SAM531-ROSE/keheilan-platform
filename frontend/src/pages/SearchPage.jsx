@@ -38,9 +38,9 @@ function SearchPage() {
       {results && (
         <div>
           <p style={{ color: '#aaa' }}>Found <strong style={{ color: '#c8a84b' }}>{results.totalFound}</strong> farms</p>
-          {Object.values(results.filtersDetected).some(v => v !== null) && (
+          {Object.values(results.filters || {}).some(v => v !== null) && (
   <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
-    {Object.entries(results.filtersDetected).map(([key, val]) =>
+    {Object.entries(results.filters || {}).map(([key, val]) =>
       val !== null ? (
         <span key={key} style={{
           background: 'rgba(200,168,75,0.15)',
